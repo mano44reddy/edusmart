@@ -3,60 +3,100 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
-const helmet = require("helmet");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const cors = require("cors");
-
-const authRoutes = require("./routes/authRoutes");
-const connectDB = require("./config/db");
 
 const app = express();
 
-/* =============================
-   SECURITY & MIDDLEWARE
-============================= */
-
-app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-/* =============================
-   DATABASE CONNECTION
-============================= */
-
-connectDB(); // uses MONGO_URI from Render env variables
-
-/* =============================
-   STATIC FILES (Frontend)
-============================= */
-
 app.use(express.static(path.join(__dirname, "public")));
 
-/* =============================
-   API ROUTES
-============================= */
+/* ================= DATABASE ================= */
 
-app.use("/api", authRoutes);
+mongoose.connect(process.env.MONGO_URI)
+.then(() => console.log("MongoDB Connected Successfully"))
+.catch(err => {
+  console.error("MongoDB Connection Error:", err);
+  process.exit(1);
+});
 
-/* =============================
-   ROOT ROUTE (Important for Render)
-============================= */
+/* ================= MODELS ================= */
+
+const studentSchema = new mongoose.Schema({
+  name: String,
+  email: { type: String, unique: true },
+  password: String,
+  paymentStatus: { type: String, default: "Pending" }
+});
+
+studentSchema.pre("save", async function(next){
+  if(!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+const Student = mongoose.model("Student", studentSchema);
+
+/* ================= AUTH ROUTES ================= */
+
+app.post("/api/student/register", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    const student = new Student({ name, email, password });
+    await student.save();
+    res.json({ message: "Registration successful" });
+  } catch (err) {
+    res.status(400).json({ message: "User already exists" });
+  }
+});
+
+app.post("/api/student/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  const student = await Student.findOne({ email });
+  if (!student) return res.status(400).json({ message: "Invalid credentials" });
+
+  const isMatch = await bcrypt.compare(password, student.password);
+  if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+
+  const token = jwt.sign(
+    { id: student._id, role: "student" },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+
+  res.json({ token });
+});
+
+/* ================= VERIFY TOKEN ================= */
+
+function verifyToken(req, res, next){
+  const token = req.headers.authorization;
+  if(!token) return res.status(401).json({ message: "Access denied" });
+
+  try{
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = verified;
+    next();
+  } catch{
+    res.status(400).json({ message: "Invalid token" });
+  }
+}
+
+app.get("/api/protected", verifyToken, (req, res)=>{
+  res.json({ message: "Access granted" });
+});
+
+/* ================= ROOT ================= */
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-/* =============================
-   HANDLE UNKNOWN ROUTES
-============================= */
-
-app.use((req, res) => {
-  res.status(404).send("404 - Page Not Found");
-});
-
-/* =============================
-   START SERVER (Render Compatible)
-============================= */
+/* ================= START ================= */
 
 const PORT = process.env.PORT || 5000;
 
