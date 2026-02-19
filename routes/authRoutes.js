@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const Student = require("../models/Student");
 const Tutor = require("../models/Tutor");
+const Admin = require("../models/Admin");
 
 const router = express.Router();
 
