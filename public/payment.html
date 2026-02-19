@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EDUSMART | Payment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo-area">
+    <img src="images/logo.png" class="logo">
+    <h2>EDUSMART</h2>
+  </div>
+  <div class="nav-links">
+    <a href="student-dashboard.html">Dashboard</a>
+    <a href="index.html">Home</a>
+  </div>
+</nav>
+
+<section class="section">
+
+  <h2>Complete Your Registration Payment</h2>
+
+  <div class="payment-box">
+
+    <div class="payment-left">
+      <h3>Student Fee: ₹49</h3>
+      <h3>Tutor Fee: ₹79</h3>
+
+      <p><strong>UPI ID:</strong> manohar@upi</p>
+      <p>Pay using Google Pay / PhonePe / Paytm</p>
+
+      <div class="qr-box">
+        <img src="images/qr.png" alt="QR Code">
+      </div>
+    </div>
+
+    <div class="payment-right">
+
+      <h3>After Payment</h3>
+
+      <input type="text" id="txnId" placeholder="Enter Transaction ID">
+
+      <button onclick="submitPayment()" class="btn-primary">
+        Submit Payment
+      </button>
+
+      <p id="msg"></p>
+
+    </div>
+
+  </div>
+
+</section>
+
+<script>
+function submitPayment() {
+
+  const txn = document.getElementById("txnId").value;
+
+  if(txn === "") {
+    alert("Please enter transaction ID");
+    return;
+  }
+
+  let student = JSON.parse(localStorage.getItem("student") || "{}");
+
+  student.paymentStatus = "Paid";
+  localStorage.setItem("student", JSON.stringify(student));
+
+  document.getElementById("msg").innerText =
+    "Payment submitted successfully! You now have full access.";
+
+  setTimeout(() => {
+    window.location.href = "student-dashboard.html";
+  }, 2000);
+}
+</script>
+
+</body>
+</html>

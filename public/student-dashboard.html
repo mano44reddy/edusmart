@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EDUSMART | Student Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="dashboard">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>EDUSMART</h2>
+
+    <a href="#">Profile</a>
+    <a href="index.html#classes">My Courses</a>
+    <a href="payment.html">Payment</a>
+    <a href="index.html">Home</a>
+    <a onclick="logout()" style="cursor:pointer;">Logout</a>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <h1>Welcome Student 👋</h1>
+
+    <!-- PROFILE CARD -->
+    <div class="card">
+      <h3>Your Account Status</h3>
+      <p><strong>Email:</strong> <span id="email"></span></p>
+      <p><strong>Payment Status:</strong> <span id="paymentStatus"></span></p>
+    </div>
+
+    <!-- ACCESS CARD -->
+    <div class="card" id="accessCard" style="display:none;">
+      <h3>Access Your Courses</h3>
+      <p>You now have full access to all subject resources.</p>
+      <button onclick="goToCourses()" class="btn-primary">
+        Explore Courses
+      </button>
+    </div>
+
+    <!-- LOCKED MESSAGE -->
+    <div class="card" id="lockedCard">
+      <h3>Access Locked 🔒</h3>
+      <p>Please complete payment to unlock full resources.</p>
+      <button onclick="window.location='payment.html'" class="btn-primary">
+        Complete Payment
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+// Get student from localStorage
+const student = JSON.parse(localStorage.getItem("student") || "{}");
+
+// If no login → redirect
+if(!student.email){
+  window.location.href = "login.html";
+}
+
+// Display email
+document.getElementById("email").innerText = student.email;
+
+// Check payment status
+if(student.paymentStatus === "Paid"){
+  document.getElementById("paymentStatus").innerHTML = "Paid ✅";
+  document.getElementById("accessCard").style.display = "block";
+  document.getElementById("lockedCard").style.display = "none";
+}
+else{
+  document.getElementById("paymentStatus").innerHTML = "Pending ❌";
+  document.getElementById("accessCard").style.display = "none";
+  document.getElementById("lockedCard").style.display = "block";
+}
+
+// Logout
+function logout(){
+  localStorage.removeItem("student");
+  window.location.href = "login.html";
+}
+
+function goToCourses(){
+  window.location.href = "index.html#classes";
+}
+
+</script>
+
+</body>
+</html>

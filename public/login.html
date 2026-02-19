@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EDUSMART | Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo-area">
+    <img src="images/logo.png" class="logo">
+    <h2>EDUSMART</h2>
+  </div>
+</nav>
+
+<section class="form-section">
+  <div class="form-box">
+
+    <h2>Login</h2>
+
+    <div class="role-select">
+      <button onclick="selectRole('student')" id="studentBtn" class="active-role">Student</button>
+      <button onclick="selectRole('admin')" id="adminBtn">Admin</button>
+    </div>
+
+    <form id="loginForm">
+
+      <input type="text" id="username" placeholder="Email / Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+
+      <button type="submit" class="btn-primary">Login</button>
+
+    </form>
+
+  </div>
+</section>
+
+<script>
+
+let selectedRole = "student";
+
+function selectRole(role){
+  selectedRole = role;
+
+  document.getElementById("studentBtn").classList.remove("active-role");
+  document.getElementById("adminBtn").classList.remove("active-role");
+
+  document.getElementById(role + "Btn").classList.add("active-role");
+}
+
+document.getElementById("loginForm").addEventListener("submit", async function(e){
+  e.preventDefault();
+
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  let endpoint = "";
+
+  if(selectedRole === "student"){
+    endpoint = "/api/student/login";
+  } else {
+    endpoint = "/api/admin/login";
+  }
+
+  const res = await fetch(endpoint,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      email: username,
+      username: username,
+      password: password
+    })
+  });
+
+  const data = await res.json();
+
+  if(res.ok){
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("role", selectedRole);
+
+    if(selectedRole === "admin"){
+      window.location.href = "admin-dashboard.html";
+    } else {
+      window.location.href = "student-dashboard.html";
+    }
+  } else {
+    alert(data.message);
+  }
+
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+/* 3D Card Hover Effect */
+.card {
+  background:white;
+  padding:15px;
+  border-radius:12px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.15);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+.card:hover {
+  transform: rotateY(8deg) rotateX(3deg) translateZ(10px);
+  box-shadow:0 12px 25px rgba(0,0,0,0.25);
+}
+
+/* Notifications Panel */
+.notifications {
+  position:fixed;
+  top:80px;
+  right:20px;
+  width:300px;
+  max-height:400px;
+  overflow-y:auto;
+  background:white;
+  border-radius:10px;
+  box-shadow:0 4px 18px rgba(0,0,0,0.2);
+  padding:15px;
+  z-index:999;
+}
+.notification-item { padding:10px; border-bottom:1px solid #eee; }
+.notification-item:last-child { border-bottom:none; }
+
+/* Chart Container */
+.chart-container {
+  width:100%;
+  max-width:500px;
+  margin:20px auto;
+}

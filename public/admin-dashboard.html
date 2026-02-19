@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EDUSMART | Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="dashboard">
+
+  <div class="sidebar">
+    <h2>Admin Panel</h2>
+    <a onclick="loadStudents()">View Students</a>
+    <a onclick="loadTutors()">View Tutors</a>
+    <a onclick="logout()">Logout</a>
+  </div>
+
+  <div class="main-content">
+    <h1>Admin Dashboard</h1>
+    <div id="dataContainer"></div>
+  </div>
+
+</div>
+
+<script>
+
+const token = localStorage.getItem("token");
+
+if(!token){
+  window.location.href = "login.html";
+}
+
+async function loadStudents(){
+  const res = await fetch("/api/admin/students",{
+    headers:{
+      "Authorization": token
+    }
+  });
+
+  const data = await res.json();
+
+  let html = "<h2>Students</h2>";
+
+  data.forEach(s=>{
+    html += `
+      <div class="card">
+        <p><strong>Name:</strong> ${s.name}</p>
+        <p><strong>Email:</strong> ${s.email}</p>
+        <p><strong>Payment:</strong> ${s.paymentStatus}</p>
+      </div>
+    `;
+  });
+
+  document.getElementById("dataContainer").innerHTML = html;
+}
+
+async function loadTutors(){
+  const res = await fetch("/api/admin/tutors",{
+    headers:{
+      "Authorization": token
+    }
+  });
+
+  const data = await res.json();
+
+  let html = "<h2>Tutors</h2>";
+
+  data.forEach(t=>{
+    html += `
+      <div class="card">
+        <p><strong>Name:</strong> ${t.name}</p>
+        <p><strong>Email:</strong> ${t.email}</p>
+      </div>
+    `;
+  });
+
+  document.getElementById("dataContainer").innerHTML = html;
+}
+
+function logout(){
+  localStorage.removeItem("token");
+  localStorage.removeItem("role");
+  window.location.href = "login.html";
+}
+
+</script>
+
+</body>
+</html>

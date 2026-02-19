@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<h2 style="text-align:center;margin-top:40px;">Admin Dashboard</h2>
+
+<div style="padding:50px;">
+  <h3>Registered Students</h3>
+  <table border="1" width="100%" cellpadding="10" id="studentTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Payment Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+async function loadStudents() {
+  const res = await fetch("/api/admin/students");
+  const students = await res.json();
+
+  const tbody = document.querySelector("#studentTable tbody");
+  tbody.innerHTML = "";
+
+  students.forEach(s => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${s.name}</td>
+        <td>${s.email}</td>
+        <td>${s.paid ? "Paid" : "Pending"}</td>
+        <td>
+          ${!s.paid ? `<button onclick="markPaid('${s.email}')">Mark Paid</button>` : ""}
+        </td>
+      </tr>
+    `;
+  });
+}
+
+async function markPaid(email) {
+  await fetch("/api/admin/markPaid", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email })
+  });
+
+  loadStudents();
+}
+
+loadStudents();
+</script>
+
+</body>
+</html>

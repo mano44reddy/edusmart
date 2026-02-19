@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EDUSMART | Sign Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo-area">
+    <img src="images/logo.png" class="logo">
+    <h2>EDUSMART</h2>
+  </div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+  </div>
+</nav>
+
+<section class="form-section">
+  <div class="form-box">
+
+    <h2>Create Account</h2>
+
+    <div class="role-select">
+      <button onclick="selectRole('student')" id="studentBtn" class="active-role">Student</button>
+      <button onclick="selectRole('tutor')" id="tutorBtn">Tutor</button>
+    </div>
+
+    <form id="signupForm">
+
+      <input type="text" placeholder="Full Name" required>
+      <input type="email" placeholder="Email" required>
+      <input type="password" placeholder="Password" required>
+
+      <div id="studentFields">
+        <select required>
+          <option value="">Select Class</option>
+          <option>Class 1-5</option>
+          <option>Class 6-8</option>
+          <option>Class 9</option>
+          <option>Class 10</option>
+          <option>Class 11</option>
+          <option>Class 12</option>
+          <option>Pharmacy</option>
+        </select>
+      </div>
+
+      <div id="tutorFields" style="display:none;">
+        <input type="text" placeholder="Qualification">
+        <input type="text" placeholder="Experience (Years)">
+        <input type="text" placeholder="Subjects You Teach">
+      </div>
+
+      <button type="submit" class="btn-primary">Sign Up</button>
+
+    </form>
+
+    <p class="small-text">
+      Already have an account? <a href="login.html">Login here</a>
+    </p>
+
+  </div>
+</section>
+
+<script>
+function selectRole(role) {
+
+  const studentFields = document.getElementById("studentFields");
+  const tutorFields = document.getElementById("tutorFields");
+  const studentBtn = document.getElementById("studentBtn");
+  const tutorBtn = document.getElementById("tutorBtn");
+
+  if(role === "student") {
+    studentFields.style.display = "block";
+    tutorFields.style.display = "none";
+    studentBtn.classList.add("active-role");
+    tutorBtn.classList.remove("active-role");
+  } else {
+    studentFields.style.display = "none";
+    tutorFields.style.display = "block";
+    tutorBtn.classList.add("active-role");
+    studentBtn.classList.remove("active-role");
+  }
+}
+
+document.getElementById("signupForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  alert("Signup successful! Please login.");
+  window.location.href = "login.html";
+});
+</script>
+
+</body>
+</html>

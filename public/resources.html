@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EDUSMART | Resources</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo-area">
+    <img src="images/logo.png" class="logo">
+    <h2>EDUSMART</h2>
+  </div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="student-dashboard.html">Dashboard</a>
+  </div>
+</nav>
+
+<h1 style="text-align:center;margin-top:40px;" id="subjectTitle"></h1>
+
+<div id="payLockDiv" class="paylock-msg">
+  <h2>🔒 Access Locked</h2>
+  <p>Please complete payment to access full resources.</p>
+  <a href="payment.html" class="btn-primary">Complete Payment</a>
+</div>
+
+<div id="resourceList" class="resources-container" style="display:none;">
+
+  <h2>Available Resources</h2>
+
+  <div class="card-grid">
+
+    <div class="resource-card">📘 Notes</div>
+    <div class="resource-card">📊 PPTs</div>
+    <div class="resource-card">🧠 Flowcharts</div>
+    <div class="resource-card">❓ Q&A</div>
+    <div class="resource-card">📝 Assignments</div>
+    <div class="resource-card">🎥 Video Lessons</div>
+
+  </div>
+
+</div>
+
+<script>
+
+const subject = localStorage.getItem("selectedSubject");
+document.getElementById("subjectTitle").innerText = subject + " Resources";
+
+const student = JSON.parse(localStorage.getItem("student") || "{}");
+
+if(!student.email){
+  window.location.href = "login.html";
+}
+
+if(student.paymentStatus === "Paid"){
+  document.getElementById("payLockDiv").style.display = "none";
+  document.getElementById("resourceList").style.display = "block";
+} else {
+  document.getElementById("resourceList").style.display = "none";
+  document.getElementById("payLockDiv").style.display = "block";
+}
+
+</script>
+
+</body>
+</html>

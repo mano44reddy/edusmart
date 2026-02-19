@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Manohar K",
+    "headline": "Pharmaceutical Research Specialist & Educator",
+    "skills": "Teaching, Research Guidance, Lab Skills",
+    "experience": "5 years",
+    "email": "146mano88reddy@gmail.com",
+    "mobile": "9345382689",
+    "qualifications": "B.Pharm, M.Pharm",
+    "photo": "manohar.png",
+    "description": "Guiding students in biology, chemistry, and pharmacy courses to excellence."
+  },
+  {
+    "id": 2,
+    "name": "Rosun M",
+    "headline": "Biology & Chemistry Educator & Specalist",
+    "skills": "Student Mentoring, Curriculum Planning",
+    "experience": "4 years",
+    "email": "rosun2006@gmail.com",
+    "mobile": "7373123494",
+    "qualifications": "AT & OTT (Ongoing)",
+    "photo": "rosun.png",
+    "description": "Helping students understand complex concepts in biology and chemistry effectively."
+  }
+]

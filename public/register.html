@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Registration</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div style="padding:100px;text-align:center;">
+  <h2>Student Registration</h2>
+
+  <form id="registerForm" style="max-width:400px;margin:auto;">
+    <input type="text" id="name" placeholder="Full Name" required><br><br>
+    <input type="email" id="email" placeholder="Email" required><br><br>
+    <button type="submit">Register</button>
+  </form>
+</div>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+
+  const res = await fetch("/api/student/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email })
+  });
+
+  const data = await res.json();
+
+  if (data.success) {
+    localStorage.setItem("studentEmail", email);
+  }
+
+  alert(data.message);
+});
+</script>
+
+</body>
+</html>

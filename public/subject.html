@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Subjects</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<h2>Subjects</h2>
+
+<div class="course-grid" id="subjects"></div>
+
+<script src="assets/js/education.js"></script>
+
+<script>
+const subjectsData = {
+  "Class 6-10": ["Maths", "Science", "English", "Social"],
+  "Class 11-12": ["Physics", "Chemistry", "Biology"],
+  "Class 1-5": ["All Subjects"]
+};
+
+const selectedClass = localStorage.getItem("selectedClass");
+
+const container = document.getElementById("subjects");
+
+if (subjectsData[selectedClass]) {
+  subjectsData[selectedClass].forEach(sub => {
+    container.innerHTML += `
+      <div class="course-card" onclick="openSubject('${sub}')">${sub}</div>
+    `;
+  });
+}
+</script>
+
+</body>
+</html>
