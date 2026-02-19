@@ -7,79 +7,56 @@ const helmet = require("helmet");
 const cors = require("cors");
 
 const authRoutes = require("./routes/authRoutes");
-const authMiddleware = require("./middleware/authMiddleware");
-const Student = require("./models/Student");
-const Tutor = require("./models/Tutor");
+const connectDB = require("./config/db");
 
 const app = express();
 
-/* =========================
-   PRODUCTION MIDDLEWARE
-========================= */
+/* =============================
+   SECURITY & MIDDLEWARE
+============================= */
 
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/* =========================
-   STATIC FILES
-========================= */
+/* =============================
+   DATABASE CONNECTION
+============================= */
+
+connectDB(); // uses MONGO_URI from Render env variables
+
+/* =============================
+   STATIC FILES (Frontend)
+============================= */
 
 app.use(express.static(path.join(__dirname, "public")));
 
-/* =========================
-   DATABASE CONNECTION
-========================= */
-
-mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("MongoDB Connected Successfully"))
-.catch(err => {
-  console.error("MongoDB Connection Error:", err);
-  process.exit(1);
-});
-
-/* =========================
-   AUTH ROUTES
-========================= */
+/* =============================
+   API ROUTES
+============================= */
 
 app.use("/api", authRoutes);
 
-/* =========================
-   PROTECTED ADMIN ROUTES
-========================= */
-
-app.get("/api/admin/students", authMiddleware, async (req, res) => {
-
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ message: "Access Forbidden" });
-  }
-
-  const students = await Student.find();
-  res.json(students);
-});
-
-app.get("/api/admin/tutors", authMiddleware, async (req, res) => {
-
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ message: "Access Forbidden" });
-  }
-
-  const tutors = await Tutor.find();
-  res.json(tutors);
-});
-
-/* =========================
-   ROOT ROUTE FIX (IMPORTANT)
-========================= */
+/* =============================
+   ROOT ROUTE (Important for Render)
+============================= */
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-/* =========================
-   START SERVER
-========================= */
+/* =============================
+   HANDLE UNKNOWN ROUTES
+============================= */
+
+app.use((req, res) => {
+  res.status(404).send("404 - Page Not Found");
+});
+
+/* =============================
+   START SERVER (Render Compatible)
+============================= */
 
 const PORT = process.env.PORT || 5000;
 
